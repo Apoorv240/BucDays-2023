@@ -86,6 +86,15 @@ public class Accel2 {
         }
     }
 
+    public Accel2 clipMagnitude(Accel magnitudeLimit) {
+        Accel magnitude = this.magnitude();
+        if (magnitude.valInMMPerSecSq() > magnitudeLimit.valInMMPerSecSq()) {
+            return this.div(magnitude).mul(magnitudeLimit);
+        } else {
+            return this;
+        }
+    }
+
     public Angle angle() {
         return Angle.inRadians(Math.atan2(this.x.valInMMPerSecSq(), this.y.valInMMPerSecSq()));
     }

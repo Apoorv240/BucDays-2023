@@ -18,6 +18,7 @@ public class Poser {
     private Drivetrain dt;
     private DashboardTelemetryWrapper dashboardTelemetry;
     private Telemetry telemetry;
+    private double maxPower;
 
     private Time lastUpdate;
     private Time s;
@@ -37,10 +38,13 @@ public class Poser {
     private static final Angle STOP_THRESHOLD = Angle.inDegrees(1.5);
     private static final double MAX_ANGLE_POWER = 0.3;
 
-    public Poser(Hardware hardware, Pose initialPose) {
+    public Poser(Hardware hardware, Pose initialPose, double maxPower) {
         this.targetPose = initialPose;
         this.localizer = new EncoderIntegrator(hardware, initialPose.pos, initialPose.heading);
         this.dt = hardware.dt;
+        this.dashboardTelemetry = hardware.dashboardTelemetry;
+        this.telemetry = hardware.opMode.telemetry;
+        this.maxPower = maxPower;
 
         this.lastUpdate = Time.now();
         this.s = Time.ZERO;
@@ -101,12 +105,11 @@ public class Poser {
             }
         }
 
-        Speed2 targetVelocity = posError.normalized().mul(targetSpeed);
-        Speed2 targetAccel = targetVelocity.sub(this.velocity);
-        Speed accelLimit = ACCEL_LIMIT.mul(dt);
-        if (targetAccel.magnitude().valInMMPerSec() > accelLimit.valInMMPerSec()) {
-            targetAccel = targetAccel.normalized().mul(accelLimit);
-        }
+        Speed2 targetVelocity = posError.normalized().mul(targetSpeed)
+                .clipMagnitude(ROBOT_SPEED_AT_MAX_POWER.mul(this.maxPower));
+        Speed2 targetAccel = targetVelocity.sub(this.velocity)
+                .clipMagnitude(ACCEL_LIMIT.mul(dt));
+
         this.velocity = this.velocity.add(targetAccel);
         Vector2 outputPosPower = this.velocity.div(ROBOT_SPEED_AT_MAX_POWER);
         boolean isPosDone = s.isZero();

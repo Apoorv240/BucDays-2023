@@ -90,6 +90,15 @@ public class Speed2 {
         }
     }
 
+    public Speed2 clipMagnitude(Speed magnitudeLimit) {
+        Speed magnitude = this.magnitude();
+        if (magnitude.valInMMPerSec() > magnitudeLimit.valInMMPerSec()) {
+            return this.div(magnitude).mul(magnitudeLimit);
+        } else {
+            return this;
+        }
+    }
+
     public Angle angle() {
         return Angle.inRadians(Math.atan2(this.x.valInMMPerSec(), this.y.valInMMPerSec()));
     }

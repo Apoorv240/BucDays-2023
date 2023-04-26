@@ -85,6 +85,15 @@ public class Distance2 {
         }
     }
 
+    public Distance2 clipMagnitude(Distance magnitudeLimit) {
+        Distance magnitude = this.magnitude();
+        if (magnitude.valInMM() > magnitudeLimit.valInMM()) {
+            return this.div(magnitude).mul(magnitudeLimit);
+        } else {
+            return this;
+        }
+    }
+
     public Angle angle() {
         return Angle.inRadians(Math.atan2(this.x.valInMM(), this.y.valInMM()));
     }

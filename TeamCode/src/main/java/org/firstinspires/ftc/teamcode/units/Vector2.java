@@ -75,6 +75,15 @@ public class Vector2 {
         }
     }
 
+    public Vector2 clipMagnitude(double magnitudeLimit) {
+        double magnitude = this.magnitude();
+        if (magnitude > magnitudeLimit) {
+            return this.div(magnitude).mul(magnitudeLimit);
+        } else {
+            return this;
+        }
+    }
+
     public Angle angle() {
         return Angle.inRadians(Math.atan2(this.x, this.y));
     }
