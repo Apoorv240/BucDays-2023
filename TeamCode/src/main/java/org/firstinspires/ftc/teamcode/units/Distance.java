@@ -7,6 +7,14 @@ public class Distance {
 
     public static final Distance ZERO = new Distance(0);
 
+    // TODO: tune
+    public static final Distance ROBOT_LENGTH = Distance.inInches(18);
+    public static final Distance ROBOT_WIDTH = Distance.inInches(18);
+
+    public static final Distance TILE_BORDER = Distance.inInches(0.75);
+    public static final Distance ONE_TILE_WITHOUT_BORDER = Distance.inTiles(1).sub(Distance.TILE_BORDER);
+    public static final Distance ONE_TILE_WITH_BORDER = Distance.inTiles(1).add(Distance.TILE_BORDER);
+
     private Distance(double val) {
         this.val = val;
     }

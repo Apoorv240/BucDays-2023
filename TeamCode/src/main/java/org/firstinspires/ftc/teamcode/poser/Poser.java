@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.poser;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.DashboardTelemetryWrapper;
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.subsystem.Drivetrain;
 import org.firstinspires.ftc.teamcode.units.Accel;
@@ -14,6 +16,8 @@ public class Poser {
     private Pose targetPose;
     private EncoderIntegrator localizer;
     private Drivetrain dt;
+    private DashboardTelemetryWrapper dashboardTelemetry;
+    private Telemetry telemetry;
 
     private Time lastUpdate;
     private Time s;
@@ -123,6 +127,10 @@ public class Poser {
         }
         boolean isHeadingDone = headingError.valInRadians() < STOP_THRESHOLD.valInRadians();
         // endregion: heading
+
+        this.dashboardTelemetry.drawRobot(currentPose);
+        this.dashboardTelemetry.drawTarget(targetPose, currentPose);
+        this.telemetry.update();
 
         this.dt.move(outputPosPower.x, outputPosPower.y, outputTurnPower);
 
