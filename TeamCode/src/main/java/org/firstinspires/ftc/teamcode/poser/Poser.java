@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.poser;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.ValueProvider;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.DashboardTelemetryWrapper;
 import org.firstinspires.ftc.teamcode.Hardware;
@@ -27,18 +30,106 @@ public class Poser {
     // TODO: tune
     //       most of these values are taken from the shepton robot, which has a similar wheelbase
     // pos-related
-    private static final Speed ROBOT_SPEED_AT_MAX_POWER = Speed.inMMPerSec(1319.9);
-    private static final Accel ACCEL_LIMIT = Accel.inMMPerSecSq(1319.9);
-    private static final Time TIME_OFFSET = Time.inSeconds(0.1);
+    private static Speed ROBOT_SPEED_AT_MAX_POWER = Speed.inMMPerSec(1319.9);
+    private static Accel ACCEL_LIMIT = Accel.inMMPerSecSq(1319.9);
+    private static Time TIME_OFFSET = Time.inSeconds(0.1);
     // heading-related
     // `D` is the exponent for the ellipse. high values of `D` lead to a sudden dropoff in power just above 0. low
     // values of `D` lead to a sudden dropoff in power just under `SLOWDOWN_THRESHOLD`. `D` should never go below `1`.
-    private static final double D = 1.8;
-    private static final Angle SLOWDOWN_THRESHOLD = Angle.inDegrees(45);
-    private static final Angle STOP_THRESHOLD = Angle.inDegrees(1.5);
-    private static final double MAX_ANGLE_POWER = 0.3;
+    private static double D = 1.8;
+    private static Angle SLOWDOWN_THRESHOLD = Angle.inDegrees(45);
+    private static Angle STOP_THRESHOLD = Angle.inDegrees(1.5);
+    private static double MAX_TURN_POWER = 0.3;
 
     public Poser(Hardware hardware, Pose initialPose, double maxPower) {
+        // region: dashboard vars
+        FtcDashboard dash = FtcDashboard.getInstance();
+
+        dash.addConfigVariable("Poser", "ROBOT_SPEED_AT_MAX_POWER (mm/s)", new ValueProvider<Double>() {
+            @Override
+            public Double get() {
+                return Poser.ROBOT_SPEED_AT_MAX_POWER.valInMMPerSec();
+            }
+
+            @Override
+            public void set(Double value) {
+                Poser.ROBOT_SPEED_AT_MAX_POWER = Speed.inMMPerSec(value);
+            }
+        }, true);
+
+        dash.addConfigVariable("Poser", "ACCEL_LIMIT (mm/s^2)", new ValueProvider<Double>() {
+            @Override
+            public Double get() {
+                return Poser.ACCEL_LIMIT.valInMMPerSecSq();
+            }
+
+            @Override
+            public void set(Double value) {
+                Poser.ACCEL_LIMIT = Accel.inMMPerSecSq(value);
+            }
+        }, true);
+
+        dash.addConfigVariable("Poser", "TIME_OFFSET (s)", new ValueProvider<Double>() {
+            @Override
+            public Double get() {
+                return Poser.TIME_OFFSET.valInSeconds();
+            }
+
+            @Override
+            public void set(Double value) {
+                Poser.TIME_OFFSET = Time.inSeconds(value);
+            }
+        }, true);
+
+        dash.addConfigVariable("Poser", "D", new ValueProvider<Double>() {
+            @Override
+            public Double get() {
+                return Poser.D;
+            }
+
+            @Override
+            public void set(Double value) {
+                Poser.D = value;
+            }
+        }, true);
+
+        dash.addConfigVariable("Poser", "SLOWDOWN_THRESHOLD (degrees)", new ValueProvider<Double>() {
+            @Override
+            public Double get() {
+                return Poser.SLOWDOWN_THRESHOLD.valInDegrees();
+            }
+
+            @Override
+            public void set(Double value) {
+                Poser.SLOWDOWN_THRESHOLD = Angle.inDegrees(value);
+            }
+        }, true);
+
+        dash.addConfigVariable("Poser", "STOP_THRESHOLD (degrees)", new ValueProvider<Double>() {
+            @Override
+            public Double get() {
+                return Poser.STOP_THRESHOLD.valInDegrees();
+            }
+
+            @Override
+            public void set(Double value) {
+                Poser.STOP_THRESHOLD = Angle.inDegrees(value);
+            }
+        }, true);
+
+        dash.addConfigVariable("Poser", "MAX_TURN_POWER", new ValueProvider<Double>() {
+            @Override
+            public Double get() {
+                return Poser.MAX_TURN_POWER;
+            }
+
+            @Override
+            public void set(Double value) {
+                Poser.MAX_TURN_POWER = value;
+            }
+        }, true);
+        // endregion: dashboard vars
+
         this.targetPose = initialPose;
         this.localizer = new EncoderIntegrator(hardware, initialPose.pos, initialPose.heading);
         this.dt = hardware.dt;
@@ -118,7 +209,7 @@ public class Poser {
         // region: heading
         Angle headingError = this.targetPose.heading.sub(currentPose.heading);
 
-        double outputTurnPower = MAX_ANGLE_POWER * Math.signum(headingError.valInRadians());
+        double outputTurnPower = MAX_TURN_POWER * Math.signum(headingError.valInRadians());
         if (Math.abs(headingError.valInRadians()) < SLOWDOWN_THRESHOLD.valInRadians()) {
             outputTurnPower *= Math.pow(
                     1 - Math.pow(
