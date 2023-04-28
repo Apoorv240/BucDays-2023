@@ -16,7 +16,7 @@ public class Imu {
     public Imu(HardwareMap hardwareMap) {
         this.imu = hardwareMap.get(IMU.class, "imu");
         this.imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
                 RevHubOrientationOnRobot.UsbFacingDirection.UP
         )));
         this.imu.resetYaw();

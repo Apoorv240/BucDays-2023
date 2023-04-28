@@ -62,8 +62,12 @@ public class Angle {
         return new Angle(-this.val);
     }
 
-    public Angle normalize() {
+    public Angle normalizeNegPiToPi() {
         return Angle.inRadians(((this.valInRadians() + Math.PI) % (Math.PI * 2)) - Math.PI);
+    }
+
+    public Angle normalizeZeroToTau() {
+        return Angle.inRadians(this.valInRadians() % (Math.PI * 2));
     }
 
     public double sin() {

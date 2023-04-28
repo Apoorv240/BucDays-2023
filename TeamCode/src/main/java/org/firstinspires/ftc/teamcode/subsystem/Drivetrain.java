@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Drivetrain {
     // TODO: make sure this is actually right (i am writing this without access to the robot)
 
+    // all 5203 Yellow Jacket 19.2:1
     public final DcMotor fl;
     public final DcMotor fr;
     public final DcMotor bl;
@@ -18,6 +19,11 @@ public class Drivetrain {
         this.fr = hardwareMap.get(DcMotor.class, "fr");
         this.bl = hardwareMap.get(DcMotor.class, "bl");
         this.br = hardwareMap.get(DcMotor.class, "br");
+
+        this.fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         this.fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         this.fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

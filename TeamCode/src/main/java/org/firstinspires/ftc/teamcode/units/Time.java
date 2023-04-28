@@ -72,6 +72,10 @@ public class Time {
         return new Time(this.val / rhs);
     }
 
+    public double div(Time rhs) {
+        return this.valInNanos() / rhs.valInNanos();
+    }
+
     public Time neg() {
         return new Time(-this.val);
     }

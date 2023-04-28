@@ -30,8 +30,8 @@ public class Poser {
     // TODO: tune
     //       most of these values are taken from the shepton robot, which has a similar wheelbase
     // pos-related
-    private static Speed ROBOT_SPEED_AT_MAX_POWER = Speed.inMMPerSec(1319.9);
-    private static Accel ACCEL_LIMIT = Accel.inMMPerSecSq(1319.9);
+    private static Speed ROBOT_SPEED_AT_MAX_POWER = Speed.inMMPerSec(1254.93);
+    private static Accel ACCEL_LIMIT = Accel.inMMPerSecSq(1254.93);
     private static Time TIME_OFFSET = Time.inSeconds(0.1);
     // heading-related
     // `D` is the exponent for the ellipse. high values of `D` lead to a sudden dropoff in power just above 0. low
@@ -219,7 +219,7 @@ public class Poser {
                     1/D
             );
         }
-        boolean isHeadingDone = headingError.valInRadians() < STOP_THRESHOLD.valInRadians();
+        boolean isHeadingDone = Math.abs(headingError.valInRadians()) < STOP_THRESHOLD.valInRadians();
         // endregion: heading
 
         this.dashboardTelemetry.drawRobot(currentPose);
