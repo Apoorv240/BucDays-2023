@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.units.Angle;
+import org.firstinspires.ftc.teamcode.units.Distance;
+
 public class Outtake {
     // 5202 Yellow Jacket 13.7:1
     public final DcMotor slide;
@@ -15,6 +18,10 @@ public class Outtake {
     public final Servo junctionGuide;
 
     public static final int SLIDE_FULLY_EXTENDED_POS = 3161;
+    public static final Distance SLIDE_EXTENSION_PER_ENCODER_TICK = Distance.inMM(5 * 48).div(384.5);
+
+    public static final Angle TURRET_MIN_ANGLE = Angle.inDegrees(-45);
+    public static final Angle TURRET_MAX_ANGLE = Angle.inDegrees(45);
 
     public Outtake(HardwareMap hardwareMap) {
         this.slide = hardwareMap.get(DcMotor.class, "lift");

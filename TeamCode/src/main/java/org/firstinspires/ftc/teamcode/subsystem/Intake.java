@@ -6,6 +6,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.units.Angle;
+import org.firstinspires.ftc.teamcode.units.Distance;
+
 public class Intake {
     // 5202 Yellow Jacket 13.7:1
     public final DcMotor slide;
@@ -15,6 +18,9 @@ public class Intake {
     public final Servo elbow2;
 
     public static final int SLIDE_FULLY_EXTENDED_POS = 3300;
+    public static final Distance SLIDE_EXTENSION_PER_ENCODER_TICK = Distance.inMM(5 * 48).div(384.5);
+
+    public static final Distance ARM_LENGTH = Distance.inInches(10);
 
     public Intake(HardwareMap hardwareMap) {
         this.slide = hardwareMap.get(DcMotor.class, "extendo");

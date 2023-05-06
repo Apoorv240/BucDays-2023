@@ -3,11 +3,12 @@ package org.firstinspires.ftc.teamcode.subsystem;
 import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.teamcode.units.Angle;
+import org.firstinspires.ftc.teamcode.units.Distance;
 
 @Config
 public class IntakeSlideController {
     private final Intake intake;
-    private int targetSlidePosition;
+    private double targetSlidePosition;
 
     private static double MAX_SLIDE_POWER = 0.5;
     private static double SLOWDOWN_THRESHOLD = 50;
@@ -19,8 +20,12 @@ public class IntakeSlideController {
         this.targetSlidePosition = 0;
     }
 
-    public void setTargetSlidePosition(int targetSlidePosition) {
+    public void setTargetSlidePosition(double targetSlidePosition) {
         this.targetSlidePosition = targetSlidePosition;
+    }
+
+    public void setTargetSlidePosition(Distance distance) {
+        this.setTargetSlidePosition(distance.div(Intake.SLIDE_EXTENSION_PER_ENCODER_TICK));
     }
 
     public boolean update() {

@@ -36,7 +36,7 @@ public class TestAuto extends LinearOpMode {
                     }
                     break;
                 default:
-                    throw new RuntimeException("unexpected state: found " + state);
+                    throw new RuntimeException("unknown state: found " + state);
             }
         }
     }

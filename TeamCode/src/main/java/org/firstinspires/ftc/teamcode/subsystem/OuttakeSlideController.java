@@ -1,17 +1,19 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.units.Angle;
+import org.firstinspires.ftc.teamcode.units.Distance;
 
 @Config
 public class OuttakeSlideController {
     private final Outtake outtake;
-    private int targetSlidePosition;
+    private double targetSlidePosition;
     private Angle targetTurretAngle;
 
     private static final double TURRET_ENCODER_TICKS_PER_REV = 537.7;
-    private static final double TURRET_ENCODER_TICKS_PER_RADIAN = 537.7 / Angle.FULL_REV.valInRadians();
+    private static final double TURRET_ENCODER_TICKS_PER_RADIAN = TURRET_ENCODER_TICKS_PER_REV / Angle.FULL_REV.valInRadians();
 
     private static double MAX_SLIDE_POWER = 0.5;
     private static double SLIDE_SLOWDOWN_THRESHOLD = 50;
@@ -28,26 +30,27 @@ public class OuttakeSlideController {
         this.targetTurretAngle = Angle.ZERO;
     }
 
-    public void setTargetSlidePosition(int targetSlidePosition) {
+    public void setTargetSlidePosition(double targetSlidePosition) {
         this.targetSlidePosition = targetSlidePosition;
     }
 
+    public void setTargetSlidePosition(Distance distance) {
+        this.setTargetSlidePosition(distance.div(Intake.SLIDE_EXTENSION_PER_ENCODER_TICK));
+    }
+
     public void setTargetTurretAngle(Angle targetTurretAngle) {
-        this.targetTurretAngle = targetTurretAngle.normalizeZeroToTau();
+        this.targetTurretAngle = Angle.inRadians(Range.clip(
+                targetTurretAngle.valInRadians(),
+                Outtake.TURRET_MIN_ANGLE.valInRadians(),
+                Outtake.TURRET_MAX_ANGLE.valInRadians()
+        ));
     }
 
     public boolean update() {
         int currentSlidePosition = this.outtake.getSlideEncoder();
         int currentTurretPosition = this.outtake.getTurretEncoder();
 
-        double targetTurretPosition =
-                Math.floor(currentTurretPosition / TURRET_ENCODER_TICKS_PER_REV) * TURRET_ENCODER_TICKS_PER_REV
-                        + this.targetTurretAngle.valInRadians() * TURRET_ENCODER_TICKS_PER_RADIAN;
-        if (targetTurretPosition > currentTurretPosition + TURRET_ENCODER_TICKS_PER_REV / 2) {
-            targetTurretPosition -= TURRET_ENCODER_TICKS_PER_REV;
-        } else if (targetTurretPosition < currentTurretPosition - TURRET_ENCODER_TICKS_PER_REV / 2) {
-            targetTurretPosition += TURRET_ENCODER_TICKS_PER_REV;
-        }
+        double targetTurretPosition = this.targetTurretAngle.valInRadians() * TURRET_ENCODER_TICKS_PER_RADIAN;
 
         double slideError = this.targetSlidePosition - currentSlidePosition;
         double turretError = targetTurretPosition - currentTurretPosition;
