@@ -40,7 +40,7 @@ public class Drive {
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
-        imu = (BNO055IMU) hardwareMap.get("imu");
+        imu = (BNO055IMU) hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(new BNO055IMU.Parameters());
         yaw = imu.getAngularOrientation().thirdAngle;
 
