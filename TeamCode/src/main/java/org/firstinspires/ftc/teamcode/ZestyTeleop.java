@@ -85,10 +85,10 @@ public class ZestyTeleop extends LinearOpMode {
             }
 
             // intake
-            if (tgp1.dpad_left && !pgp1.dpad_left) {
+            if (tgp1.dpad_left && !pgp1.dpad_left) { // Dpad-Left extends intake fully
                 arm.down();
                 intake.extend();
-            } else if (tgp1.dpad_right && !pgp1.dpad_right) {
+            } else if (tgp1.dpad_right && !pgp1.dpad_right) { // Dpad-Right retracts intake fully
                 intake.retract();
                 arm.mid();
 
@@ -121,15 +121,15 @@ public class ZestyTeleop extends LinearOpMode {
                         return true;
                     }
                 });
-            } else if (tgp1.dpad_up) {
+            } else if (tgp1.dpad_up) { // Dpad-Up manually extends intake
                 intake.setPosition(intake.getCurrentPosition() + 200);
-            } else if (tgp1.dpad_down) {
+            } else if (tgp1.dpad_down) { // Dpad-Down manually retracts intake
                 intake.setPosition(intake.getCurrentPosition() - 200);
             }
             intake.update();
 
             // arm claw
-            if (tgp1.right_bumper && !pgp1.right_bumper) {
+            if (tgp1.right_bumper && !pgp1.right_bumper) { // Right Bumper toggles intake claw
                 final var wasOpened = arm.isOpened();
                 if (!flipperHasCone || !wasOpened) arm.changeClaw();
                 if (arm.isUp() && !wasOpened) flipperHasCone = true;
@@ -144,20 +144,21 @@ public class ZestyTeleop extends LinearOpMode {
             arm.update();
 
             // turret
+            /*
             if (tgp2.dpad_left && !pgp2.dpad_left) turret.setAngle(45);
-            else if (tgp2.dpad_right && !pgp2.dpad_right) turret.setAngle(-45);
-            else if (tgp2.dpad_down && !pgp2.dpad_down) turret.setAngle(0);
-            else if (tgp2.dpad_up && !pgp2.dpad_up) turret.setAngle(savedTurretAngle);
-            else if (Math.abs(tgp2.right_stick_x) > 0.0)
+            else if (tgp2.dpad_right && !pgp2.dpad_right) turret.setAngle(-45);*/
+            if (tgp2.a && !pgp2.a) turret.setAngle(0);
+            else if (tgp2.x && !pgp2.x) turret.setAngle(savedTurretAngle);
+            else if (Math.abs(tgp2.right_stick_x) > 0.1)
                 turret.setAngle(turret.getTargetAngle() - (double) (tgp2.right_stick_x));
-            if (tgp2.left_bumper && !pgp2.left_bumper) savedTurretAngle = turret.getCurrentAngle();
+            if (tgp2.y && !pgp2.y) savedTurretAngle = turret.getCurrentAngle();
             turret.update();
 
             // lift
-            if (tgp2.y && !pgp2.y) {
+            if (tgp2.dpad_up && !pgp2.dpad_up) {
                 lift.up();
                 flipper.brace();
-            } else if (tgp2.a && !pgp2.a) {
+            } else if (tgp2.dpad_down && !pgp2.dpad_down) {
                 lift.down();
                 flipper.unbrace();
                 turret.setAngle(0);
